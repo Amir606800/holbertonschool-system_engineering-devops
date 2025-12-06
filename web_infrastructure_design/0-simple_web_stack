@@ -1,0 +1,61 @@
+
+The proccess of the whole system:
+
+First of all, a user must open the web browser and search for the url www.foobar.com
+Then this domain name (www.foobar.com) is redirected to the DNS system to be translated into the IP address
+If the DNS recursive has the IP address in its cache then the IP address sent back to the browser.
+If not, then DNS recursive sends the domain name to authoritative DNS which has three parts.
+After a long journey of the domain name it is finally translated into IP address (which is 8.8.8.8 in this case) and now 
+our web browser sends request to 8.8.8.8
+
+----------------------------------------------------------------------------
+
+What is a Server?
+Server is a pyshical or virtual machine that runs all the services of a system.
+It contains webb and application server, database and application files.
+
+----------------------------------------------------------------------------
+
+What is the role of the domain name?
+Domain name is used to remember the name of the websites easily and human-readable form.
+It is like a phone book for the telephone numbers.
+
+----------------------------------------------------------------------------
+
+Type of the www in www.foobar.com
+Since the www points to the 8.8.8.8 ip address it shows that we use IPv4 address.
+Its record in the DNS is A record
+
+----------------------------------------------------------------------------
+
+The role of the Web server
+Web server handles the requests made by clients and responses made by the server.
+It helps to send and accept these. For instance, Nginx is simple but on of the most used webserver
+
+The role of the Application server.
+This part of the server used to handle the data comes from APIs or the Databases. 
+Node.js is a very good example for Application server for its dynamic data handling
+
+The role of Database
+Databases used to store the data of the clients. These are the essential for larger systems.
+MongoDB, MySql and etc databases differs from each other based on their use cases but both are reliable
+and efficient databases
+
+----------------------------------------------------------------------------
+
+The Communication
+
+User’s computer communicates via HTTP or HTTPS over TCP/IP.
+Web server (Nginx) listens on port 80 (HTTP) or 443 (HTTPS).
+Requests for dynamic content are passed internally to the application server.
+Application server may query the database.
+Data flows back up to the web server and finally to the user’s browser.
+
+----------------------------------------------------------------------------
+
+But yet there are some issues like SPOF, Downtime for maintance and scalability.
+SPOF - Since the whole system relys on a single server, it would be a disaster if it goes down
+After each update or security checks the web server should go down and this can cause problems for users
+Single server cannot handle the high traffic.
+
+
