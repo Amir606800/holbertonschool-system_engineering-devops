@@ -1,0 +1,44 @@
+# Three-Server Web Infrastructure for www.foobar.com
+
+## User Request Flow:
+When a user opens their browser and types www.foobar.com, the browser queries DNS. 
+DNS resolves the domain name to the IP address of the load balancer (HAProxy). 
+The user’s HTTP/HTTPS request is then sent to HAProxy, which distributes 
+the traffic between the two web/application servers.
+
+## Load Balancer:
+We use HAProxy as the load balancer. 
+It is configured with the Round-Robin algorithm, 
+sending requests sequentially to each server to balance load evenly. 
+This setup is Active-Active: both servers handle traffic simultaneously. 
+In contrast, an Active-Passive setup would have one server active while the other waits as a backup.
+
+## Web/Application/Database Servers:
+There are two identical servers. Each contains:
+- Nginx web server: serves static content and forwards dynamic requests to the application server.
+- Application server: executes business logic, handles dynamic requests,
+and communicates with the database.
+- Application files: the codebase required for the application.
+- MySQL database: stores structured data.
+
+## Database Cluster:
+The two MySQL databases are in a Primary-Replica (Master-Slave) cluster. 
+The Primary node handles all write operations and replicates data to the Replica node. 
+The Replica handles read requests. 
+This improves performance and provides redundancy.
+
+## Communication Flow:
+User → DNS → HAProxy load balancer → Web server → 
+Application server → Database (Primary for writes, Replica for reads) → back to user.
+
+## Purpose of Additional Elements:
+- Load balancer: distributes traffic and prevents server overload.
+- Second server: provides redundancy and higher availability.
+- Primary-Replica database cluster: allows read scalability and fault tolerance.
+
+## Issues and Limitations:
+- Single Points of Failure (SPOF): the load balancer and Primary database.
+- Security: no firewall or HTTPS configured.
+- Monitoring: no system to track server health, performance, or traffic.
+- Maintenance: deploying new code may require downtime if rolling updates are not used.
+

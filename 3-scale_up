@@ -1,0 +1,128 @@
+**Components:**
+- 2 Load Balancers (HAproxy) configured as a cluster
+- 4 Dedicated Servers:
+  - 1 Web Server (Nginx) - dedicated server
+  - 1 Application Server - dedicated server
+  - 1 Primary Database Server (MySQL) - dedicated server
+  - 1 Replica Database Server (MySQL) - dedicated server
+
+**User Request Flow:**
+User → DNS → Load Balancer Cluster (Active-Active) → Web Server → Application Server → Database Server (Primary/Replica)
+
+---
+
+## Additional Elements and Why
+
+### 1. Additional Server
+- **Why:** Allows separation of components onto dedicated servers, improving performance, scalability, and resource management. Each component can be scaled independently based on demand.
+
+### 2. Load Balancer Cluster (HAproxy)
+- **Why:** Eliminates the single point of failure of having one load balancer. Two load balancers in a cluster provide high availability and redundancy.
+- **Configuration:** Active-Active cluster where both load balancers share the traffic load.
+- **Benefits:**
+  - **High Availability:** If one load balancer fails, the other continues serving traffic
+  - **Increased Capacity:** Both handle traffic simultaneously, doubling load balancing capacity
+  - **No Downtime:** Maintenance can be performed on one while the other serves traffic
+  - **Failover:** Automatic failover using Virtual IP (VIP) or DNS-based routing
+
+### 3. Component Separation (Split Architecture)
+
+#### Dedicated Web Server
+- **Why:**
+  - Handles only HTTP/HTTPS requests and serves static content
+  - Can be optimized specifically for web serving (caching, compression, SSL)
+  - Scales independently based on web traffic patterns
+  - Reduces attack surface by isolating web-facing components
+  - Can deploy multiple web servers easily for horizontal scaling
+
+#### Dedicated Application Server
+- **Why:**
+  - Runs business logic and application code exclusively
+  - Can be scaled based on application processing needs
+  - Optimized for CPU and memory intensive operations
+  - Easier to update application code without affecting web server
+  - Better resource allocation for application-specific requirements
+  - Can implement application-specific caching strategies
+
+#### Dedicated Database Server
+- **Why:**
+  - Database operations are resource-intensive (disk I/O, memory)
+  - Can be optimized specifically for database performance (SSD, RAM, query optimization)
+  - Isolates database from other components, preventing resource contention
+  - Easier to implement database-specific security measures
+  - Simplifies database backup, replication, and maintenance
+  - Can scale storage and compute independently
+  - Better security through network isolation
+
+---
+
+## Benefits of This Architecture
+
+### 1. Independent Scaling
+- Scale web servers for high traffic
+- Scale application servers for complex processing
+- Scale database servers for data growth
+- Each tier scales based on its specific bottleneck
+
+### 2. Performance Optimization
+- Each server optimized for its specific role
+- No resource contention between components
+- Better cache utilization per component
+- Specialized hardware/configuration per tier
+
+### 3. Improved Security
+- Network segmentation between tiers
+- Firewall rules specific to each component
+- Database not directly exposed to web tier
+- Defense in depth strategy
+
+### 4. Simplified Maintenance
+- Update/restart one component without affecting others
+- Rolling updates possible per tier
+- Easier troubleshooting (component isolation)
+- Better monitoring and diagnostics per component
+
+### 5. Fault Isolation
+- Failure in one component doesn't crash others
+- Reduced blast radius of incidents
+- Easier recovery and rollback procedures
+
+### 6. High Availability
+- Load balancer cluster eliminates SPOF
+- Can have multiple instances per tier
+- Redundancy at every level
+
+---
+
+## Application Server vs Web Server
+
+### Web Server (Nginx):
+- **Purpose:** Handles HTTP/HTTPS protocol
+- **Functions:**
+  - Accepts client connections
+  - Serves static files (HTML, CSS, JS, images)
+  - SSL/TLS termination
+  - Request routing/proxying
+  - Load balancing
+  - Caching static content
+  - Compression (gzip)
+- **Optimized for:** Network I/O, concurrent connections, static content delivery
+
+### Application Server:
+- **Purpose:** Executes application business logic
+- **Functions:**
+  - Runs dynamic code (Python, Java, PHP, Node.js, etc.)
+  - Processes business logic
+  - Generates dynamic content
+  - Handles sessions and state
+  - Interacts with databases
+  - Processes API requests
+  - Executes background jobs
+- **Optimized for:** CPU processing, memory operations, code execution
+
+### Why Separate Them:
+- **Different resource requirements:** Web servers need network bandwidth, app servers need CPU/memory
+- **Different scaling patterns:** Static content vs dynamic processing
+- **Security:** Web server faces internet, app server can be internal
+- **Flexibility:** Change application code without reconfiguring web server
+- **Performance:** Each optimized for its specific task

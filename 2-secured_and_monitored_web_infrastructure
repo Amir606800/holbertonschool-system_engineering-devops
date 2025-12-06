@@ -1,0 +1,26 @@
+
+When a user enters www.foobar.com, the browser first sends a DNS request. 
+The DNS server responds with the IP of the load balancer. 
+The load balancer (HAProxy) receives the HTTPS traffic and distributes it to three 
+backend servers using round-robin, sending each new request to the next server in the cycle.
+This keeps traffic balanced and prevents overload.
+
+Each backend server has its own firewall, and the network also includes a perimeter firewall 
+and a database firewall for extra protection. The SSL certificate for the website is 
+stored on the load balancer, so all incoming traffic is encrypted and secure.
+
+On each server, Nginx forwards the request to the application server, which runs the logic 
+and communicates with the MySQL database. A single Primary MySQL server handles all writes,
+while Replica servers copy its data and handle read requests to reduce load.
+After processing, the response goes back through Nginx, then to the load balancer,
+and finally to the user.
+
+Monitoring agents on each server collect CPU, memory, logs, and 
+request metrics (like QPS) andsend them to a central monitoring system.
+
+Even with this setup, there are still issues: 
+traffic between the load balancer and backend may be unencrypted,
+the Primary database is a single point of failure, and having all 
+components on each server can cause resource conflicts. 
+Additional redundancy, internal TLS, and better scaling 
+strategies are needed for true production readiness.
