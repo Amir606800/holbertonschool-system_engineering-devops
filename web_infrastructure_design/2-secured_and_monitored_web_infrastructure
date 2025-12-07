@@ -1,3 +1,29 @@
+User
+  |
+  v
+DNS (www.foobar.com)
+  |
+  v
+[ Firewall #1 ]
+  |
+  v
+Load Balancer (HAProxy)
+- SSL Certificate
+- Monitoring Client #3
+  |
+  +-------------------------+
+  |                         |
+  v                         v
+[ Firewall #2 ]           [ Firewall #3 ]
+  |                         |
+  v                         v
+Server 1                   Server 2
+- Nginx                    - Nginx
+- App Server               - App Server
+- Code Base                - Code Base
+- MySQL DB                 - MySQL DB
+- Monitoring #1            - Monitoring #2
+
 
 When a user enters www.foobar.com, the browser first sends a DNS request. 
 The DNS server responds with the IP of the load balancer. 
