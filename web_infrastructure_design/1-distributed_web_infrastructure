@@ -1,5 +1,41 @@
 # Three-Server Web Infrastructure for www.foobar.com
 
+                          User
+                           |
+                           | 1) User enters www.foobar.com
+                           |
+                    +----------------+
+                    |   DNS Server   |
+                    +----------------+
+                           |
+                           | 2) DNS returns LB IP
+                           |
+                    +----------------+
+                    |  Load Balancer |
+                    |    HAProxy     |
+                    +----------------+
+                       /          \
+                      /            \
+                     /              \
+        +------------------+    +------------------+
+        |     Server 1     |    |     Server 2     |---------------------------------------|
+        +------------------+    +------------------+                                       |
+                 |                                                                         |
+    -----------------------------------------                                              |
+    |                   |                   |                                              |
++---------+     +----------------+     +---------+                                         |
+|  Nginx  | --> | App Server     | --> | MySQL   |                                         |
+| (Web    |     | (Runs your     |     | Database|                                         |
+| Server) |     | application)   |     +---------+                                         |
++---------+     | + Code Base    |                                                         |
+                +----------------+                                                         |
+                                                                  +---------+     +----------------+     +---------+
+                                                                  |  Nginx  | --> | App Server     | --> | MySQL   |
+                                                                  | (Web    |     | (Runs your     |     | Database|
+                                                                  | Server) |     | application)   |     +---------+
+                                                                  +---------+     | + Code Base    |
+                                                                                  +----------------+
+
 ## User Request Flow:
 When a user opens their browser and types www.foobar.com, the browser queries DNS. 
 DNS resolves the domain name to the IP address of the load balancer (HAProxy). 
