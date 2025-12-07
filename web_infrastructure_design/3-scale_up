@@ -1,10 +1,33 @@
-**Components:**
-- 2 Load Balancers (HAproxy) configured as a cluster
-- 4 Dedicated Servers:
-  - 1 Web Server (Nginx) - dedicated server
-  - 1 Application Server - dedicated server
-  - 1 Primary Database Server (MySQL) - dedicated server
-  - 1 Replica Database Server (MySQL) - dedicated server
+User
+  |
+  v
+DNS
+  |
+  v
+[ Firewall #1 ]
+  |
+  v
+Load Balancer Cluster
++-----------------------------+
+|  HAProxy #1   HAProxy #2    |
+|  (clustered)  (clustered)   |
+|  SSL Cert                     |
+|  Monitoring Client #1         |
++-----------------------------+
+  |
+  +---------+-----------+-------------+
+            |           |             |
+            v           v             v
+
+[ Firewall #2 ]   [ Firewall #3 ]   [ Firewall #4 ]
+      |                 |                 |
+      v                 v                 v
+
+Web Server          App Server        Database Server
+- Nginx             - App Server      - MySQL
+- Code Base         - Code Base       - Storage
+- Monitoring #2     - Monitoring #3   - Monitoring #4
+
 
 **User Request Flow:**
 User → DNS → Load Balancer Cluster (Active-Active) → Web Server → Application Server → Database Server (Primary/Replica)
