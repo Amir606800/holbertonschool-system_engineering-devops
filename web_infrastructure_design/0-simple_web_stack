@@ -1,4 +1,31 @@
 
+                  User
+                   |
+                   | 1) User enters www.foobar.com
+                   |
+            +----------------+
+            |   DNS Server   |
+            | (www → 8.8.8.8)|
+            +----------------+
+                   |
+                   | 2) DNS returns IP 8.8.8.8
+                   |
+            +----------------------+
+            |      Server          |
+            |     (8.8.8.8)        |
+            +----------------------+
+                   |
+   ------------------------------------------------
+   |                    |                         |
+   |                    |                         |
++---------+     +----------------+        +----------------+
+|  Nginx  | --> | App Server     |  -->   |   MySQL DB     |
+| (Web    |     | (Runs your     |        | (Database)      |
+| Server) |     | application)   |        +----------------+
++---------+     | + Code Base    |
+                +----------------+
+
+
 The proccess of the whole system:
 
 First of all, a user must open the web browser and search for the url www.foobar.com
